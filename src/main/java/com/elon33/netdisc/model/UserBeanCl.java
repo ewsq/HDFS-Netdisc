@@ -37,7 +37,7 @@ public class UserBeanCl {
 
 			if (rs.next()) {
 				// 说明用户存在
-				String pwd = rs.getString(3);
+				String pwd = rs.getString("password");
 				if (password.equals(pwd)) {
 					// 说明密码正确
 					val = true;

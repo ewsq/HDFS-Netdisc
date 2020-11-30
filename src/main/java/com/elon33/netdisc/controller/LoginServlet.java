@@ -8,12 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.elon33.netdisc.model.HdfsDAO;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.mapred.JobConf;
 
-
-
-import com.elon33.netdisc.model.*;
 
 /**
  * Servlet implementation class ListServlet
@@ -24,6 +22,7 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
 	}
@@ -31,12 +30,13 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		UserBeanCl ubc = new UserBeanCl();
+		com.elon33.netdisc.model.UserBeanCl ubc = new com.elon33.netdisc.model.UserBeanCl();
 		if(ubc.checkUser(username, password)){
 			//用户合法，跳转到界面
 			HttpSession session = request.getSession(); 
@@ -44,6 +44,7 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("currentPath", HdfsDAO.getHdfs()+"/"+username);
 			JobConf conf = HdfsDAO.config();
 	        HdfsDAO hdfs = new HdfsDAO(conf);
+
 			FileStatus[] list = hdfs.ls("/"+username);
 			request.setAttribute("list",list);
 			request.getRequestDispatcher("index.jsp").forward(request, response);

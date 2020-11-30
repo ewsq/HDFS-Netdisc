@@ -36,6 +36,7 @@ public class UploadServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		this.doPost(request, response);
@@ -45,6 +46,7 @@ public class UploadServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
@@ -53,8 +55,10 @@ public class UploadServlet extends HttpServlet {
 		int maxMemSize = 50 * 1024 * 1024; // 50M
 		HttpSession session = request.getSession();
 		ServletContext context = getServletContext();
-		String filePath = context.getInitParameter("file-upload");
-		System.out.println("source file path:" + filePath + "");
+		//String filePath = context.getInitParameter("file-upload");
+		//System.out.println("filePath:" + filePath + "");
+		String filePath = request.getSession().getServletContext().getRealPath("upload");
+		System.out.println("realPath:" + filePath + "");
 		// 验证上传内容了类型
 		String contentType = request.getContentType();
 		if ((contentType.indexOf("multipart/form-data") >= 0)) {
@@ -63,7 +67,8 @@ public class UploadServlet extends HttpServlet {
 			// 设置内存中存储文件的最大值
 			factory.setSizeThreshold(maxMemSize);
 			// 本地存储的数据大于 maxMemSize.
-			factory.setRepository(new File("c:\\temp"));
+			factory.setRepository(new File(filePath));
+			//factory.setRepository(new File("c:\\temp"));
 
 			// 创建一个新的文件上传处理程序
 			ServletFileUpload upload = new ServletFileUpload(factory);

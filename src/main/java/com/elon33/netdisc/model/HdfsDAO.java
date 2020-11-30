@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -19,7 +20,7 @@ import org.apache.hadoop.mapred.JobConf;
 public class HdfsDAO {
 
 	// HDFS访问地址
-	private static final String HDFS = "hdfs://192.168.1.101:9000";
+	private static final String HDFS = "hdfs://hbmaster:9000";
 	// hdfs路径
 	private String hdfsPath;
 	// Hadoop系统配置
@@ -62,10 +63,26 @@ public class HdfsDAO {
 	public static JobConf config() {
 		JobConf conf = new JobConf(HdfsDAO.class);
 		conf.setJobName("HdfsDAO");
-		conf.addResource("classpath:/hadoop-config/core-site.xml");
-		conf.addResource("classpath:/hadoop-config/hdfs-site.xml");
-		conf.addResource("classpath:/hadoop-config/mapred-site.xml");
+		//conf.addResource("classpath:/hadoop-config/core-site.xml");
+		//conf.addResource("classpath:/hadoop-config/hdfs-site.xml");
+		//conf.addResource("classpath:/hadoop-config/mapred-site.xml");
 		return conf;
+	}
+	/**
+	 * 创建目录
+	 *
+	 * @param filePath
+	 * @return
+	 */
+	public boolean existFile(String filePath) throws IOException {
+		if (StringUtils.isEmpty(filePath)) {
+			throw new IllegalArgumentException("filePath不能为空");
+		}
+		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
+		Path path = new Path(filePath);
+		boolean bl=fs.exists(path);
+		fs.close();
+		return bl;
 	}
 
 	// 在根目录下创建文件夹
@@ -81,18 +98,22 @@ public class HdfsDAO {
 
 	// 某个文件夹的文件列表
 	public FileStatus[] ls(String folder) throws IOException {
+		if(!existFile(folder)){
+			mkdirs(folder);
+		}
 		Path path = new Path(folder);
 		FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);
 		FileStatus[] list = fs.listStatus(path);
 		System.out.println("ls: " + folder);
 		System.out.println("==========================================================");
-		if (list != null)
+		if (list != null) {
 			for (FileStatus f : list) {
 				// System.out.printf("name: %s, folder: %s, size: %d\n",
 				// f.getPath(), f.isDir(), f.getLen());
 				System.out.printf("%s, folder: %s, 大小: %dK\n", f.getPath().getName(), (f.isDirectory() ? "目录" : "文件"),
 						f.getLen() / 1024);
 			}
+		}
 		System.out.println("==========================================================");
 		fs.close();
 

@@ -24,6 +24,7 @@ public class DocumentServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 String filePath = new String(request.getParameter("filePath").getBytes("ISO-8859-1"),"GB2312");
 		 HttpSession session = request.getSession();
@@ -38,6 +39,7 @@ public class DocumentServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doGet(request, response);
 	}

@@ -13,6 +13,7 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
+	<!--可以使用这里配置上传临时缓存目录和下载临时缓存目录，现在没有使用这里-->
 	<context-param>
 		<param-name>file-upload</param-name>
 		<param-value>F:\apache-tomcat-8.0.48\Netdisc-upload</param-value>
